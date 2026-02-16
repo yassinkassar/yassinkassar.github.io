@@ -4,10 +4,10 @@ title = "Yassin"
 theme = "hugo-texify3"
 
 [params]
-	author = "Yassin Abdelkassar"
-	description = "My new blog"
-	enable_math = true
+    author = "Yassin Abdelkassar"
+    description = "My new blog"
+    enable_math = true
 
 [params.social]
-	github = "yassinkassar"
-	linkedin = "yassin-abdelkassar"
+    github = "yassinkassar"
+    linkedin = "yassin-abdelkassar"
