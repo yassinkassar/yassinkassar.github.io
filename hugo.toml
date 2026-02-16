@@ -1,8 +1,13 @@
 baseURL = 'https://abdelkassar.com/'
 languageCode = 'en-us'
-title = "Yassin's website"
+title = "Yassin"
 theme = "hugo-texify3"
 
+[params]
 	author = "Yassin Abdelkassar"
 	description = "My new blog"
 	enable_math = true
+
+[params.social]
+	github = "yassinkassar"
+	linkedin = "yassin-abdelkassar"
