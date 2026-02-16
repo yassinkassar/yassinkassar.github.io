@@ -1,0 +1,8 @@
+baseURL = 'https://abdelkassar.com/'
+languageCode = 'en-us'
+title = "Yassin's website"
+theme = "hugo-texify3"
+
+	author = "Yassin Abdelkassar"
+	description = "My new blog"
+	enable_math = true
