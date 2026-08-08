@@ -1,0 +1,16 @@
+{{ define "main" }}
+<section class="band page-top">
+  <div class="section-title"><span class="num">01</span><h2>{{ .Title }}</h2></div>
+  {{ with .Content }}<div class="prose">{{ . }}</div>{{ end }}
+  {{ range .Pages }}
+  <a class="post-row" href="{{ .RelPermalink }}">
+    <div class="post-head">
+      <span class="post-title">{{ .Title }}</span>
+      {{ with .Params.tag }}<span class="tag">{{ . }}</span>{{ end }}
+    </div>
+    <p class="post-blurb">{{ with .Params.summary }}{{ . }}{{ else }}{{ .Summary }}{{ end }}</p>
+    <div class="post-meta"><span>{{ .Date.Format "Jan 2006" }}</span><span>{{ .ReadingTime }} min</span></div>
+  </a>
+  {{ end }}
+</section>
+{{ end }}

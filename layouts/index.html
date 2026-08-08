@@ -1,0 +1,88 @@
+{{ define "main" }}
+<section id="top" class="hero">
+  <canvas id="garden"></canvas>
+  <div class="hero-veil"></div>
+  <div class="hero-inner">
+    <div class="eyebrow"><span class="rule"></span><span>TU Eindhoven · CS &amp; Data Science</span></div>
+    <h1>Systems that have to survive the real world.</h1>
+    <p class="lede">I try to understand things properly: how a disease shows up in an image, how a machine can move like a person, how a structure fails under test. Then make something out of it worth putting into the world.</p>
+    <div class="cta">
+      <a class="btn" href="{{ "/posts/" | relURL }}">Read the writing</a>
+      <a class="btn ghost" href="#projects">See the projects</a>
+    </div>
+    <div class="hint">Click the field to plant something</div>
+  </div>
+</section>
+
+<section id="writing" class="band">
+  <div class="section-head">
+    <div class="section-title"><span class="num">01</span><h2>Writing</h2></div>
+    <a class="meta-link" href="{{ "/index.xml" | relURL }}">RSS</a>
+  </div>
+  <p class="section-lede">Thinking out loud — about how we come to know things, and what that costs. Not project write-ups; those live below.</p>
+
+  {{ $posts := where .Site.RegularPages "Section" "posts" }}
+  {{ if $posts }}
+    {{ range first 6 $posts }}
+    <a class="post-row" href="{{ .RelPermalink }}">
+      <div class="post-head">
+        <span class="post-title">{{ .Title }}</span>
+        {{ with .Params.tag }}<span class="tag">{{ . }}</span>{{ end }}
+      </div>
+      <p class="post-blurb">{{ with .Params.summary }}{{ . }}{{ else }}{{ .Summary }}{{ end }}</p>
+      <div class="post-meta">
+        <span>{{ .Date.Format "Jan 2006" }}</span>
+        <span>{{ .ReadingTime }} min</span>
+        {{ range .Params.topics }}<span>{{ . }}</span>{{ end }}
+      </div>
+    </a>
+    {{ end }}
+  {{ else }}
+    <p class="empty">First posts in progress.</p>
+  {{ end }}
+</section>
+
+<section id="projects" class="band">
+  <div class="section-title"><span class="num">02</span><h2>Projects</h2></div>
+  <p class="section-lede">Things I have built, mostly with other people. Longer write-ups to come.</p>
+
+  {{ range .Site.Data.projects }}
+    {{ if .highlight }}
+    <div class="project-highlight">
+      <div class="project-meta"><span class="moss">{{ .context }} · {{ .year }}</span><span>{{ .status }}</span></div>
+      <h3>{{ .title }}</h3>
+      <p>{{ .summary }}</p>
+    </div>
+    {{ else }}
+    <article class="project-row">
+      <div class="project-when"><div class="year">{{ .year }}</div><div>{{ .context }}</div></div>
+      <div>
+        <div class="project-head">
+          <h3>{{ .title }}</h3>
+          <span class="{{ if .accent }}moss{{ else }}faint{{ end }}">{{ .status }}</span>
+        </div>
+        <p>{{ .summary }}</p>
+        {{ with .tags }}<div class="tags">{{ . }}</div>{{ end }}
+      </div>
+    </article>
+    {{ end }}
+  {{ end }}
+</section>
+
+<section id="about" class="band about">
+  <div>
+    <div class="section-title"><span class="num">03</span><h2>About</h2></div>
+    <p class="about-lede">I am a computer science and data science student at TU Eindhoven. The subjects change — robotics, medicine and disease, econometrics — but the pattern does not: learn one far enough to build something with it, then find out whether the thing survives contact with the world.</p>
+    <a class="email" href="mailto:{{ .Site.Params.email | default "hello@abdelkassar.com" }}">{{ .Site.Params.email | default "hello@abdelkassar.com" }}</a>
+  </div>
+  <div class="elsewhere">
+    <div class="label">Elsewhere</div>
+    <div class="links">
+      <a href="https://github.com/{{ .Site.Params.social.github }}">GitHub</a>
+      <a href="https://www.linkedin.com/in/{{ .Site.Params.social.linkedin }}">LinkedIn</a>
+      <a href="{{ "/index.xml" | relURL }}">RSS</a>
+    </div>
+    <p class="note">The header is grown live in your browser. No two visits alike.</p>
+  </div>
+</section>
+{{ end }}

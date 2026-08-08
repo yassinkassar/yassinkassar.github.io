@@ -1,0 +1,33 @@
+# Edit this file to change the Projects section. Order here is order on the page.
+
+- title: "Sensor placement for fatigue monitoring"
+  year: ""
+  context: "Professional work"
+  status: "Structural health monitoring"
+  highlight: true
+  summary: "Working out where sensors go on a large structure under test, so that damage is observable at all."
+  tags: ""
+
+- title: "MIMIC"
+  year: "2026"
+  context: "High Tech Systems"
+  summary: "External hardware that physically moves a real mouse, using AI trained on human movement. Nothing runs on the host computer."
+  tags: "Computer vision · Sequence models · 2-DOF manipulator"
+
+- title: "Beyond Black Boxes"
+  year: "2026"
+  context: "Medical AI"
+  summary: "A chest X-ray classifier that shows where it looked and how sure it is."
+  tags: "R-Net · Focal loss · AdamW"
+
+- title: "Digital Twinning"
+  year: "2026"
+  context: "Autonomous Systems"
+  summary: "A live digital twin of an autonomous system, mirroring its state as it drives."
+  tags: "Simulation · Autonomy"
+
+- title: "FocusFlow"
+  year: "2026"
+  context: "Software Design"
+  summary: "A Pomodoro tracker in Java that ties every session to a task."
+  tags: "JavaFX · Repository · Facade"

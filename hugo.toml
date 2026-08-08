@@ -1,13 +1,15 @@
 baseURL = 'https://abdelkassar.com/'
 languageCode = 'en-us'
-title = "Yassin"
-theme = "hugo-texify3"
+title = "Yassin Abdelkassar"
 
 [params]
     author = "Yassin Abdelkassar"
-    description = "My new blog"
+    description = "Computer science and data science student at TU Eindhoven."
     enable_math = true
 
 [params.social]
     github = "yassinkassar"
     linkedin = "yassin-abdelkassar"
+
+[markup.goldmark.renderer]
+    unsafe = true

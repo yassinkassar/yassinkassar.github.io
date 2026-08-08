@@ -1,0 +1,7 @@
+{{ define "main" }}
+<article class="band page-top prose">
+  <div class="post-meta top"><span>{{ .Date.Format "January 2006" }}</span><span>{{ .ReadingTime }} min</span>{{ with .Params.tag }}<span class="moss">{{ . }}</span>{{ end }}</div>
+  <h1>{{ .Title }}</h1>
+  {{ .Content }}
+</article>
+{{ end }}
