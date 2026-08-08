@@ -2,6 +2,7 @@
   'use strict';
   var DENSITY = 2;            // simultaneous growing stems
   var BLOOM = '#43926b';      // flower colour
+  var SLOW = true;            // half-speed growth; false for full speed
 
   var root = document.documentElement;
   var css = function (n) { return getComputedStyle(root).getPropertyValue(n).trim(); };
@@ -46,7 +47,8 @@
     tips = []; blooms = [];
     for (var i = 0; i < DENSITY; i++) seed(0.3 * W + Math.random() * 0.68 * W);
     if (reduced) { for (var j = 0; j < 1100; j++) step(); return; }
-    (function loop() { step(); raf = requestAnimationFrame(loop); })();
+    var f = 0;
+    (function loop() { if (!(SLOW && f++ % 2)) step(); raf = requestAnimationFrame(loop); })();
   }
   function step() {
     if (!ctx) return;
@@ -84,10 +86,15 @@
     });
     if (tips.length < DENSITY * 2 && Math.random() < 0.032) seed();
   }
-  if (cv) cv.addEventListener('pointerdown', function (e) {
-    var r = cv.getBoundingClientRect();
-    seed(e.clientX - r.left); seed(e.clientX - r.left + (Math.random() - 0.5) * 44);
-  });
+  var hero = document.querySelector('.hero');
+  if (cv && hero) {
+    hero.style.cursor = 'crosshair';
+    hero.addEventListener('pointerdown', function (e) {
+      if (e.target && e.target.closest && e.target.closest('a,button')) return;
+      var r = cv.getBoundingClientRect();
+      seed(e.clientX - r.left); seed(e.clientX - r.left + (Math.random() - 0.5) * 44);
+    });
+  }
 
   var rail = document.getElementById('rail'), rcv = document.getElementById('rail-canvas'), rctx, RW, RH;
   function railBoot() {
