@@ -23,7 +23,7 @@
     <span>© {{ now.Format "2006" }} · still growing</span>
   </footer>
 
-  <script src="{{ "js/garden.js" | relURL }}"></script>
+  <script src="{{ (resources.Get "js/garden.js" | fingerprint).RelPermalink }}"></script>
   {{ if .Site.Params.enable_math }}
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
