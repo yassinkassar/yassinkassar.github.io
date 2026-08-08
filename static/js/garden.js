@@ -1,8 +1,8 @@
 (function () {
   'use strict';
   var DENSITY = 2;            // simultaneous growing stems
-  var BLOOM = '#43926b';      // flower colour
   var SLOW = true;            // half-speed growth; false for full speed
+  var BLOOM_MIX = [0, 0, 1, 1, 2, 3];  // weighting across the four bloom colours
 
   var root = document.documentElement;
   var css = function (n) { return getComputedStyle(root).getPropertyValue(n).trim(); };
@@ -21,10 +21,12 @@
     readColours(); boot(); drawRail();
   });
 
-  var paper, stem;
+  var paper, stem, palette = [];
+  function pickBloom() { return palette[BLOOM_MIX[(Math.random() * BLOOM_MIX.length) | 0]] || stem; }
   function readColours() {
     paper = css('--bg') || '#f8f5ef';
     stem = css('--moss') || '#43926b';
+    palette = ['--bloom1', '--bloom2', '--bloom3', '--bloom4'].map(function (n) { return css(n) || stem; });
     var veil = document.querySelector('.hero-veil');
     if (veil) veil.style.background = 'linear-gradient(96deg, ' + paper + ' 20%, color-mix(in oklab, ' + paper + ' 82%, transparent) 44%, transparent 74%)';
   }
@@ -48,7 +50,7 @@
     for (var i = 0; i < DENSITY; i++) seed(0.3 * W + Math.random() * 0.68 * W);
     if (reduced) { for (var j = 0; j < 1100; j++) step(); return; }
     var f = 0;
-    (function loop() { if (!(SLOW && f++ % 2)) step(); raf = requestAnimationFrame(loop); })();
+    (function loop() { if (!(SLOW && f++ % 3)) step(); raf = requestAnimationFrame(loop); })();
   }
   function step() {
     if (!ctx) return;
@@ -67,14 +69,14 @@
           t: t.t * 0.6, life: t.life * 0.55, curl: (Math.random() - 0.5) * 0.03, gen: t.gen + 1 });
         next.push(t);
       } else if (t.y > -30 && blooms.length < 70) {
-        blooms.push({ x: t.x, y: t.y, r: 0.5, max: 3 + Math.random() * 7,
+        blooms.push({ x: t.x, y: t.y, r: 0.5, max: 3 + Math.random() * 7, c: pickBloom(),
           n: 4 + ((Math.random() * 4) | 0), rot: Math.random() * 6.283, age: 0 });
       }
     }
     tips = next;
     blooms = blooms.filter(function (b) {
-      b.age++; b.r += (b.max - b.r) * 0.07;
-      ctx.fillStyle = BLOOM; ctx.globalAlpha = 0.48;
+      b.age++; b.r += (b.max - b.r) * 0.028;
+      ctx.fillStyle = b.c; ctx.globalAlpha = 0.48;
       for (var i = 0; i < b.n; i++) {
         var ang = b.rot + i * (6.283 / b.n);
         ctx.beginPath();
@@ -82,7 +84,7 @@
         ctx.fill();
       }
       ctx.globalAlpha = 1;
-      return b.age < 70;
+      return b.age < 150;
     });
     if (tips.length < DENSITY * 2 && Math.random() < 0.032) seed();
   }
@@ -126,9 +128,9 @@
     }
     rctx.globalAlpha = 1;
     var doch = Math.max(1, document.documentElement.scrollHeight);
-    rctx.fillStyle = BLOOM;
-    ['writing', 'projects', 'about'].forEach(function (id) {
+    ['writing', 'projects', 'about'].forEach(function (id, mi) {
       var el = document.getElementById(id); if (!el) return;
+      rctx.fillStyle = palette[mi % palette.length] || stem;
       var my = (el.getBoundingClientRect().top + window.scrollY) / doch * RH;
       var grow = Math.min(1, Math.max(0, (tip - my) / 46));
       if (grow <= 0) return;
@@ -150,10 +152,52 @@
     requestAnimationFrame(function () { queued = false; drawRail(); });
   }, { passive: true });
 
+  // Mobile browsers fire resize when the URL bar hides/shows on scroll. Rebooting there
+  // would wipe the garden's history, so height-only changes just restretch the bitmap.
+  var lastW = window.innerWidth;
+  function reflow() {
+    if (cv && ctx) {
+      var w = cv.clientWidth || W, h = cv.clientHeight || H;
+      if (Math.round(w) !== Math.round(W) || Math.round(h) !== Math.round(H)) {
+        var keep = document.createElement('canvas');
+        keep.width = cv.width; keep.height = cv.height;
+        keep.getContext('2d').drawImage(cv, 0, 0);
+        var dpr = Math.min(2, window.devicePixelRatio || 1);
+        var sx = w / W, sy = h / H;
+        W = w; H = h;
+        cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        ctx.fillStyle = paper; ctx.fillRect(0, 0, W, H);
+        ctx.drawImage(keep, 0, 0, W, H);
+        for (var i = 0; i < tips.length; i++) { tips[i].x *= sx; tips[i].y *= sy; }
+        for (var j = 0; j < blooms.length; j++) { blooms[j].x *= sx; blooms[j].y *= sy; }
+      }
+    }
+    railBoot();
+  }
+
   var rt;
   window.addEventListener('resize', function () {
-    clearTimeout(rt); rt = setTimeout(function () { boot(); railBoot(); }, 250);
+    clearTimeout(rt);
+    rt = setTimeout(function () {
+      var w = window.innerWidth;
+      if (Math.abs(w - lastW) > 2) { lastW = w; boot(); railBoot(); }
+      else reflow();
+    }, 250);
   });
+
+
+  // A closed <details> is skipped, not display:none, so the unfold animation
+  // does not restart by itself on the second open. Force it.
+  document.addEventListener('toggle', function (e) {
+    var d = e.target;
+    if (!d || d.tagName !== 'DETAILS' || !d.open) return;
+    var panel = d.lastElementChild && d.lastElementChild.lastElementChild;
+    if (!panel) return;
+    panel.style.animationName = 'none';
+    void panel.offsetWidth;
+    panel.style.animationName = 'unfold';
+  }, true);
 
   readColours(); boot(); railBoot();
 })();

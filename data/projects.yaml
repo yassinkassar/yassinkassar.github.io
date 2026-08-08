@@ -1,33 +1,132 @@
 # Edit this file to change the Projects section. Order here is order on the page.
+#
+# A project opens up on the page only if it has a `detail:` block. No detail block
+# = the row stays plain text and is not clickable. That asymmetry is deliberate:
+# nothing has to be padded out to look finished.
+#
+# detail:
+#   what:   two sentences. What it is, plainly.
+#   method: list of term + note. Keep to three.
+#   image:  optional. Path to a file in static/, e.g. "/img/mimic.jpg". Empty = no image.
+#   image_caption: label above the image.
+#   video:  optional. Path to a file in static/, e.g. "/video/mimic.mp4". Plays muted, on loop.
+#   video_caption: label above the video.
+#   links:  list of label (+ optional note, + optional url).
+#           A link with no `url` renders as plain faint text — use that for private repos.
+#
+# NOTE: Beyond Black Boxes still has "#" placeholder urls.
 
 - title: "Sensor placement for fatigue monitoring"
   year: ""
   context: "Professional work"
   status: "Structural health monitoring"
   highlight: true
-  summary: "Working out where sensors go on a large structure under test, so that damage is observable at all."
+  summary: "Where to put sensors on a large structure under test, so that damage is observable at all."
   tags: ""
 
 - title: "MIMIC"
   year: "2026"
   context: "High Tech Systems"
-  summary: "External hardware that physically moves a real mouse, using AI trained on human movement. Nothing runs on the host computer."
+  summary: "Hardware that moves a real mouse, trained on human movement. Nothing runs on the host computer."
   tags: "Computer vision · Sequence models · 2-DOF manipulator"
+  detail:
+    what: "The host machine sees an ordinary mouse moving; everything else happens on the desk. Movement is learned from recorded human traces, so the paths look like a person's rather than generated ones."
+    method:
+      - term: "Vision"
+        note: "Screen state read externally, no host-side hooks."
+      - term: "Sequence"
+        note: "Sequence model over recorded human traces."
+      - term: "Actuation"
+        note: "Two degrees of freedom, calibrated to the desk."
+    video: "/video/mimic.mp4"
+    video_caption: "It running"
+    links:
+      - label: "Repo private · on request"
 
 - title: "Beyond Black Boxes"
   year: "2026"
   context: "Medical AI"
   summary: "A chest X-ray classifier that shows where it looked and how sure it is."
   tags: "R-Net · Focal loss · AdamW"
+  detail:
+    what: "Accuracy alone says nothing about a single case. Every prediction carries a confidence and the region it was read from, so the failures can be seen rather than averaged away."
+    method:
+      - term: "R-Net"
+        note: "Residual backbone over the radiograph."
+      - term: "Focal loss"
+        note: "The findings are rare and the classes badly unbalanced."
+      - term: "AdamW"
+        note: "Decoupled weight decay for fine-tuning."
+    links:
+      - label: "Repository"
+        note: "GitHub"
+        url: "#"
+      - label: "Written report"
+        note: "PDF"
+        url: "#"
+
+- title: "Detecting phase-like states in pedestrian crowds"
+  year: "2026"
+  context: "Crowd dynamics"
+  summary: "Whether a busy train platform can be described with physical phases. Mostly it cannot, and where it breaks is the interesting part."
+  tags: "Gaussian mixture models · LiDAR trajectories · Savitzky–Golay"
+  detail:
+    what: "A week of LiDAR trajectories from Eindhoven Centraal platform 2.1, cut into 3 m × 3 m cells over 5-second windows and clustered without labels. Of five features, only density and mean velocity order the way physical phases predict, and the states sit close together — real, but not cleanly separated."
+    method:
+      - term: "Filtering"
+        note: "Savitzky–Golay smoothing, then a physics filter for LiDAR identity switches and Kalman drift."
+      - term: "Cells"
+        note: "3 m × 3 m over 5 s, walkable floor only."
+      - term: "Clustering"
+        note: "Gaussian mixture, K = 4, on four z-scored features; flow excluded as density × speed."
+    image: "/img/crowd-phases.gif"
+    image_caption: "A region slowing down"
+    links:
+      - label: "Repository"
+        note: "GitHub"
+        url: "https://github.com/yassinkassar/local-crowd-phases-eindhoven-platform"
+      - label: "Report"
+        note: "PDF"
+        url: "https://github.com/yassinkassar/local-crowd-phases-eindhoven-platform/blob/main/report/local-crowd-phases-eindhoven-platform_report.pdf"
+      - label: "Phase-change animations"
+        url: "https://github.com/yassinkassar/local-crowd-phases-eindhoven-platform/tree/main/gifs"
 
 - title: "Digital Twinning"
   year: "2026"
   context: "Autonomous Systems"
-  summary: "A live digital twin of an autonomous system, mirroring its state as it drives."
+  summary: "A farm robot in simulation with a live twin beside it, mirroring its state as it drives."
   tags: "Simulation · Autonomy"
+  detail:
+    what: "A TurtleBot3 drives a simulated field while a command centre mirrors zone moisture, nutrients, battery and fertiliser. Weather and faults are injected from the twin to see what the robot does about them."
+    method:
+      - term: "ROS 2"
+        note: "Nodes for zone detection, crop decisions, resources, and the twin supervisor."
+      - term: "Gazebo · Nav2"
+        note: "Simulated field, SLAM, and navigation between zones."
+      - term: "Dashboard"
+        note: "Live telemetry, plus weather and fault injection from twin to robot."
+    image: "/img/digital-twinning.png"
+    image_caption: "Command centre, navigation, and the simulated field"
+    links:
+      - label: "Repository"
+        note: "GitHub"
+        url: "https://github.com/shakespeareTorta/NutrientNexus"
 
 - title: "FocusFlow"
   year: "2026"
   context: "Software Design"
   summary: "A Pomodoro tracker in Java that ties every session to a task."
   tags: "JavaFX · Repository · Facade"
+  detail:
+    what: "A session cannot exist without a task, so the record afterwards says what the time went into, not just how much of it there was."
+    method:
+      - term: "JavaFX"
+        note: "Desktop UI."
+      - term: "Repository"
+        note: "Persistence behind one interface."
+      - term: "Facade"
+        note: "One entry point over the services."
+    links:
+      - label: "Repository"
+        note: "GitHub"
+        url: "#"

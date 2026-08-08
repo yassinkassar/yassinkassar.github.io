@@ -6,10 +6,6 @@
     <div class="eyebrow"><span class="rule"></span><span>TU Eindhoven · CS &amp; Data Science</span></div>
     <h1>Systems that have to survive the real world.</h1>
     <p class="lede">I try to understand things properly: how a disease shows up in an image, how a machine can move like a person, how a structure fails under test. Then make something out of it worth putting into the world.</p>
-    <div class="cta">
-      <a class="btn" href="{{ "/posts/" | relURL }}">Read the writing</a>
-      <a class="btn ghost" href="#projects">See the projects</a>
-    </div>
     <div class="hint">Click the field to plant something</div>
   </div>
 </section>
@@ -19,7 +15,7 @@
     <div class="section-title"><span class="num">01</span><h2>Writing</h2></div>
     <a class="meta-link" href="{{ "/index.xml" | relURL }}">RSS</a>
   </div>
-  <p class="section-lede">Thinking out loud — about how we come to know things, and what that costs. Not project write-ups; those live below.</p>
+  <p class="section-lede">Thinking out loud — about how we come to know things, and what that costs.</p>
 
   {{ $posts := where .Site.RegularPages "Section" "posts" }}
   {{ if $posts }}
@@ -44,15 +40,69 @@
 
 <section id="projects" class="band">
   <div class="section-title"><span class="num">02</span><h2>Projects</h2></div>
-  <p class="section-lede">Things I have built, mostly with other people. Longer write-ups to come.</p>
+  <p class="section-lede">Things I have built, mostly with other people.</p>
 
+  <div class="ledger">
   {{ range .Site.Data.projects }}
+    {{ $p := . }}
     {{ if .highlight }}
     <div class="project-highlight">
       <div class="project-meta"><span class="moss">{{ .context }} · {{ .year }}</span><span>{{ .status }}</span></div>
       <h3>{{ .title }}</h3>
       <p>{{ .summary }}</p>
     </div>
+    {{ else if .detail }}
+    <details class="proj" name="proj">
+      <summary>
+        <div class="project-when"><div class="year">{{ .year }}</div><div>{{ .context }}</div></div>
+        <div>
+          <div class="project-head">
+            <h3>{{ .title }}</h3>
+            <span class="proj-open"><span class="chev"></span></span>
+          </div>
+          <p>{{ .summary }}</p>
+        </div>
+      </summary>
+      <div class="proj-detail">
+        <div></div>
+        <div>
+          <div class="slots">
+            {{ with .detail.what }}
+            <div class="slot"><div class="slot-label">What it is</div><p>{{ . }}</p></div>
+            {{ end }}
+            {{ with .detail.method }}
+            <div class="slot">
+              <div class="slot-label">Method</div>
+              <dl class="method">{{ range . }}<dt>{{ .term }}</dt><dd>{{ .note }}</dd>{{ end }}</dl>
+            </div>
+            {{ end }}
+            {{ with .detail.image }}
+            <div class="slot">
+              <div class="slot-label">{{ with $p.detail.image_caption }}{{ . }}{{ else }}Image{{ end }}</div>
+              <figure class="proj-img"><img src="{{ . | relURL }}" alt="{{ $p.title }}" loading="lazy"></figure>
+            </div>
+            {{ end }}
+            {{ with .detail.video }}
+            <div class="slot">
+              <div class="slot-label">{{ with $p.detail.video_caption }}{{ . }}{{ else }}It running{{ end }}</div>
+              <figure class="proj-img"><video src="{{ . | relURL }}" muted loop playsinline autoplay preload="none" controls></video></figure>
+            </div>
+            {{ end }}
+            {{ with .detail.links }}
+            <div class="slot">
+              <div class="slot-label">Where it lives</div>
+              <div class="where">
+                {{ range . }}
+                  {{ if .url }}<a href="{{ .url }}"><span>{{ .label }}</span>{{ with .note }}<span>{{ . }}</span>{{ end }}</a>
+                  {{ else }}<span class="none">{{ .label }}</span>{{ end }}
+                {{ end }}
+              </div>
+            </div>
+            {{ end }}
+          </div>
+        </div>
+      </div>
+    </details>
     {{ else }}
     <article class="project-row">
       <div class="project-when"><div class="year">{{ .year }}</div><div>{{ .context }}</div></div>
@@ -62,11 +112,11 @@
           <span class="{{ if .accent }}moss{{ else }}faint{{ end }}">{{ .status }}</span>
         </div>
         <p>{{ .summary }}</p>
-        {{ with .tags }}<div class="tags">{{ . }}</div>{{ end }}
       </div>
     </article>
     {{ end }}
   {{ end }}
+  </div>
 </section>
 
 <section id="about" class="band about">
